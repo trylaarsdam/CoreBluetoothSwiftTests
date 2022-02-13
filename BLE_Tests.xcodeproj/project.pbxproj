@@ -12,6 +12,8 @@
 		334D38A327B57CE6006F82C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 334D38A227B57CE6006F82C7 /* Assets.xcassets */; };
 		334D38A627B57CE6006F82C7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 334D38A527B57CE6006F82C7 /* Preview Assets.xcassets */; };
 		334D38AD27B57D53006F82C7 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334D38AC27B57D53006F82C7 /* BluetoothManager.swift */; };
+		334D38B027B5B3D3006F82C7 /* CharacteristicViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334D38AF27B5B3D3006F82C7 /* CharacteristicViewer.swift */; };
+		334D38B227B5B617006F82C7 /* CharacteristicEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334D38B127B5B617006F82C7 /* CharacteristicEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +23,8 @@
 		334D38A227B57CE6006F82C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		334D38A527B57CE6006F82C7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		334D38AC27B57D53006F82C7 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		334D38AF27B5B3D3006F82C7 /* CharacteristicViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicViewer.swift; sourceTree = "<group>"; };
+		334D38B127B5B617006F82C7 /* CharacteristicEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacteristicEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +41,8 @@
 		334D389227B57CE4006F82C7 = {
 			isa = PBXGroup;
 			children = (
+				334D38B127B5B617006F82C7 /* CharacteristicEditor.swift */,
+				334D38AF27B5B3D3006F82C7 /* CharacteristicViewer.swift */,
 				334D389D27B57CE4006F82C7 /* BLE_Tests */,
 				334D389C27B57CE4006F82C7 /* Products */,
 			);
@@ -140,6 +146,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				334D38B227B5B617006F82C7 /* CharacteristicEditor.swift in Sources */,
+				334D38B027B5B3D3006F82C7 /* CharacteristicViewer.swift in Sources */,
 				334D38A127B57CE4006F82C7 /* ContentView.swift in Sources */,
 				334D38AD27B57D53006F82C7 /* BluetoothManager.swift in Sources */,
 				334D389F27B57CE4006F82C7 /* BLE_TestsApp.swift in Sources */,

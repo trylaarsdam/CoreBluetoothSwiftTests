@@ -7,6 +7,9 @@
 
 import Foundation
 import CoreBluetooth
+import UserNotifications
+
+
 
 struct Peripheral: Identifiable, Equatable {
     let id: Int
@@ -20,17 +23,27 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     @Published var peripherals = [Peripheral]()
     @Published var scanning = false
     @Published var connected = false
+    @Published var connectedPeripheral: CBPeripheral?
     @Published var discoveredServices = [CBService]()
+    @Published var characteristicValues: [String: Data] = [:]
+    var doNotReconnect = false
+    
+    let content = UNMutableNotificationContent()
+    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
 
     var BLEcentral: CBCentralManager!
     
     func connect(peripheral: Peripheral) {
         self.stopScanning()
         BLEcentral.connect(peripheral.peripheral, options: nil)
+        doNotReconnect = false
     }
     
     func disconnect() {
-        
+        if let toBeDisconnected = connectedPeripheral {
+            self.BLEcentral.cancelPeripheralConnection(toBeDisconnected)
+        }
+        doNotReconnect = true
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -44,7 +57,23 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         connected = true
-        peripheral.discoverServices([CBUUID(string: "38FAE295-026C-43F5-AAA9-54064C4251E0")])
+        connectedPeripheral = peripheral
+        peripheral.discoverServices(nil)
+        content.title = "BLE Connected"
+        content.subtitle = "Device \(peripheral.name ?? "Unknown Name") was connected"
+        content.sound = UNNotificationSound.default
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
+    }
+    
+    func readValueForCharacteristic(characteristic: CBCharacteristic) {
+        self.connectedPeripheral!.readValue(for: characteristic)
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        characteristicValues[characteristic.uuid.uuidString] = characteristic.value
+        print("")
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
@@ -74,8 +103,22 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
         // Handle error
     }
     
+    func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
+        print(dict)
+    }
+    
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         connected = false
+        content.title = "BLE Disconnected"
+        content.subtitle = "Device \(peripheral.name ?? "Unknown Name") was disconnected"
+        content.sound = UNNotificationSound.default
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
+        
+        if(!doNotReconnect) {
+            self.BLEcentral.connect(peripheral, options: nil)
+        }
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -104,7 +147,7 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     }
     
     func startScanning() {
-            BLEcentral.scanForPeripherals(withServices: [CBUUID(string: "38FAE295-026C-43F5-AAA9-54064C4251E0")], options: nil)
+        BLEcentral.scanForPeripherals(withServices: [CBUUID(string: "38FAE295-026C-43F5-AAA9-54064C4251E0"), CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA9E")], options: nil)
         self.scanning = true
     }
     
